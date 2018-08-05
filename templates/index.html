@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <style>
+        .nav-menu {
+            margin: 2px 5px
+        }
+
+        .nav-menu a {
+            margin: 0 3px;
+        }
+
+        .nav-menu > div {
+            display: inline
+        }
+
+        .logo {
+            margin: 10px
+        }
+
+        .nav-logo {
+            border: 1px solid #d8dfea;
+            margin: 0 5px;
+            overflow: hidden
+        }
+
+        .sys-menu {
+            margin: 5px 5px;
+            background-color: #2b6695;
+            height: 30px
+        }
+
+        .sys-menu a {
+            color: white;
+            margin: 3px 12px;
+            font-size: 14px;
+            line-height: 30px
+        }
+
+        .icon-comment {
+            margin-left: 5px;
+            padding: 0 5px 0 18px;
+            background-repeat: no-repeat;
+            background-image: url(/static/img/icon_comment.gif)
+        }
+
+        .icon-arrow {
+            padding: 0 5px 0 18px;
+            background-repeat: no-repeat;
+            background-image: url(/static/img/icon_arrow.gif)
+        }
+
+        .pub-info {
+            margin-bottom: 10px
+        }
+
+        .content {
+            margin: 0 5px
+        }
+
+        .left-ul {
+            list-style: none;
+            background-color:
+        }
+
+        .left-ul li {
+            margin: 5px
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <!--head-->
+    <div class="row nav-menu">
+        <div class="pull-left">代码改变世界</div>
+        <div class="pull-right">
+            {% if request.user.is_authenticated %}
+                <span>Hi, {{ request.user.username }}</span>
+                {% if request.user.blog %}
+                    <a href="/{{ request.user.blog.site_name }}/">我的博客</a>
+                {% else %}
+                    <a href="/create_blog/">开通博客</a>
+                {% endif %}
+                <!-- <a href="javascript:;">短消息</a>
+                 <a href="javascript:;">设置</a>-->
+                <a href="/logout/">退出</a>
+            {% else %}
+                [<a href="/login/">登录</a>
+                <a href="/register/">注册</a>]
+            {% endif %}
+        </div>
+    </div>
+    <div class="row nav-logo">
+        <a href="javascript:;"><img src="/static/img/logo_small.gif" class="logo pull-left"></a>
+        <a href="javascript:;"><img src="/static/img/nav_pic.jpg" class="logo pull-right" alt=""></a>
+    </div>
+    <div class="row sys-menu">
+        <a href="javascript:;">园子</a>
+        <a href="javascript:;">新闻</a>
+        <a href="javascript:;">博问</a>
+        <a href="javascript:;">闪存</a>
+        <a href="javascript:;">小组</a>
+        <a href="javascript:;">收藏</a>
+        <a href="javascript:;">招聘</a>
+        <a href="javascript:;">班级</a>
+        <a href="javascript:;">找找看</a>
+
+    </div>
+    <!--body-->
+    <div class="row content">
+        <!--left-->
+        <div class="col-md-2">
+            <div class="list-group">
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+            </div>
+        </div>
+        <!--mid-->
+        <div class="col-md-7">
+            <div class="article-list">
+                {% for article in current_page %}
+                    <div class="article">
+                        <h5>
+                            <a href="/{{ article.user.blog.site_name }}/articles/{{ article.pk }}/">{{ article.title }}</a>
+                        </h5>
+                        <div class="article-desc">
+                            <span class="media-left">
+                                <a href="/{{ article.user.blog.site_name }}/"><img width="50" height="50"
+                                                                                   src="/media/{{ article.user.avatar }}"
+                                                                                   alt=""></a>
+                            </span>
+                            <span class="media-right">
+                                    {{ article.desc }}
+                            </span>
+                        </div>
+                        <div class="small pub-info">
+                            <span><a href="/{{ article.user.blog.site_name }}/">{{ article.user.username }}</a></span>
+                            <span> 发布于 {{ article.create_time }} </span>
+                            <span class="icon-comment">评论({{ article.comment_count }})</span>
+                            <span class="icon-arrow">点赞({{ article.up_count }})</span>
+                        </div>
+                        <hr>
+                    </div>
+
+                {% endfor %}
+            </div>
+
+            <!--分页-->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if current_page.has_previous %}
+                        <li><a href="?page{{ current_page.previous_page_number }}" aria-label="Previous"><span
+                                aria-hidden="true">上一页</span></a></li>
+                    {% else %}
+                        <li class="disabled"><a href="" aria-label="Previous"><span aria-hidden="true">上一页</span></a>
+                        </li>
+                    {% endif %}
+
+                    {% for item in page_range %}
+                        {% if current_page_num == item %}
+                            <li class="active"><a href="?page={{ item }}">{{ item }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ item }}">{{ item }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if current_page.has_next %}
+                        <li><a href="?page={{ current_page.next_page_number }}" aria-label="Next"><span
+                                aria-hidden="true">下一页</span></a></li>
+                    {% else %}
+                        <li class="disabled"><a href="" aria-label="Next"><span aria-hidden="true">下一页</span></a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        <!--right-->
+        <div class="col-md-3">
+            <div class="list-group">
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+                <button type="button" class="list-group-item">Cras justo odio</button>
+                <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
+                <button type="button" class="list-group-item">Morbi leo risus</button>
+                <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+                <button type="button" class="list-group-item">Vestibulum at eros</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+{% extends 'backend/base.html' %}
+
+{% block title %}
+    <title>{{ request.user.username }}</title>
+{% endblock %}
+
+{% block article %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th class="text-center">评论数</th>
+                <th class="text-center">点赞数</th>
+                <th class="text-center">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for article in article_list %}
+            <tr crticle-pk="{{ article.pk }}">
+                <td><a href="/{{ article.user.blog.site_name }}/articles/{{ article.pk }}/">{{ article.title }} </a>({{ article.create_time|date:"Y-m-d H:i" }})</td>
+                <td class="text-center">{{ article.comment_count }}</td>
+                <td class="text-center">{{ article.up_count }}</td>
+                <td class="text-center"><a href="/edit_article/{{ article.pk }}/">编辑</a> | <a href="javascript:delete_article({{ article.pk }}); ">删除</a></td>
+            </tr>
+    {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script>
+        function delete_article(aid) {
+            $.ajax({
+                url: '/delete_article/',
+                type: 'get',
+                data: {
+                    'article_id': aid
+                },
+                success: function (data) {
+                    if(data){
+                        $("[crticle-pk="+ aid +"]").remove()
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

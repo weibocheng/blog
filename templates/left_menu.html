@@ -1,0 +1,26 @@
+<div class="left-menu">
+    <ul class="list-unstyled left-item">
+    <p>标签</p>
+    {% for tag in tag_list %}
+        <li><a href="/{{ blog.site_name }}/tag/{{ tag.0 }}/">{{ tag.0 }}({{ tag.1 }})</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<hr>
+<div class="left-menu">
+    <ul class="list-unstyled left-item">
+        <p>分类</p>
+        {% for cate in cate_list %}
+            <li><a href="/{{ blog.site_name }}/category/{{ cate.0 }}/">{{ cate.0 }}({{ cate.1 }})</a></li>
+        {% endfor %}
+    </ul>
+</div>
+<hr>
+<div class="left-menu">
+    <ul class="list-unstyled left-item">
+        <p>随笔档案</p>
+        {% for date in date_list %}
+            <li><a href="/{{ blog.site_name }}/archive/{{ date.0 }}/">{{ date.0 }}({{ date.1 }})</a></li>
+        {% endfor %}
+    </ul>
+</div>

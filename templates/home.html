@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ user.username }}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block content %}
+<div class="article-list">
+    {% for article in article_list %}
+        <div class="article">
+            <h5><a href="/{{ blog.site_name }}/articles/{{ article.pk }}/">{{ article.title }}</a></h5>
+            <div class="article-desc">
+                <span>
+                    {{ article.desc }}
+                </span>
+            </div>
+            <div class="small pub-info">
+                <span> 发布于 {{ article.create_time }} </span>
+                <span class="icon-comment">评论({{ article.comment_count }})</span>
+                <span class="icon-arrow">点赞({{ article.up_count }})</span>
+            </div>
+            <hr>
+        </div>
+
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+

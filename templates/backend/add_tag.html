@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加标签-{{ request.user.username }}</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <style>
+        .fm{margin-top: 50px}
+        .error{color: red;margin-left: 5px}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row fm">
+        <div class="col-md-6 col-md-offset-3">
+            <h3 class="text-center">添加标签</h3>
+            <form>
+                {% csrf_token %}
+                <p class="form-group">标签名称
+                    <input type="text" id="title" class="form-control">
+                </p>
+                <p>
+                    <input type="button" class="btn btn-default" id="submit" value="提交">
+                    <span class="error"></span>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/static/js/jquery-3.2.1.min.js"></script>
+<script>
+$("#submit").click(function () {
+    var title = $("#title").val();
+    if (title){
+        $.ajax({
+            url: "/add_tag/",
+            type: "post",
+            data: {
+                csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                title: title,
+                to: "{{ to }}"
+            },
+
+            success: function (data) {
+                console.log(data)
+                if(data['msg']){
+                    $(".error").html(data['msg'])
+                }else {
+                    location.href = '/' + data['to'] + '/'
+                }
+            }
+        })
+
+    }else {
+        $(".error").html('请输入标签名称')
+    }
+})
+</script>
+</html>

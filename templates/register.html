@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <style>
+        #avatar{display: none}
+        #re_pwd_err{margin-left: 10px}
+        .to-top{margin-top: 3%}
+        .head{font-size: 30px;font-weight: 700;margin-bottom: 10px}
+        span{color: red}
+    </style>
+</head>
+<body>
+<div class="container to-top">
+    <div class="row">
+        <div class="text-center head">注册</div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form id="fm" novalidate>
+                {% csrf_token %}
+
+                {% for field in fm %}
+                    <div class="form-group">
+                        <label for="{{ field.auto_id }}">{{ field.label }}</label>
+                        {{ field }}
+                        <span class="pull-right"></span>
+                    </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <label for="avatar">头像
+                        <img id="avatar_img" width="40" height="40" src="/static/img/default.png">
+                    </label>
+                    <input type="file" id="avatar">
+                </div>
+                <input type="button" value="确认" id="ajax_submit" class="btn btn-default"><span id="re_pwd_err"></span>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/static/js/jquery-3.2.1.min.js"></script>
+<script>
+    //头像预览
+    $("#avatar").change(function () {
+        // 获取用户选中的文件对象
+        var file_obj = $(this)[0].files[0];
+        // 获取文件对象的路径
+        var reader = new FileReader();
+        reader.readAsDataURL(file_obj);
+        // 修改img的src属性 ，src=文件对象的路径
+        reader.onload = function () {
+            $("#avatar_img").attr("src", reader.result)
+        }
+    });
+
+    // Ajax提交数据
+    $("#ajax_submit").click(function () {
+        // 提交文件
+        var form_data = new FormData();
+        // 获取form表单内文本数据
+        var text_data = $("#fm").serializeArray();
+        $.each(text_data, function (index, data) {
+            form_data.append(data.name, data.value)
+        });
+
+        form_data.append("avatar", $("#avatar")[0].files[0]);
+        $.ajax({
+            url: "",
+            type: "post",
+            contentType: false,
+            processData: false,
+            data: form_data,
+            success: function (data) {
+                console.log(data);
+                if(data.username){
+                    console.log(111)
+                    location.href = '/login/'
+                }else {
+
+                    $("span").text("");
+                    $.each(data.msg, function (field, error_list) {
+                        console.log(field, error_list);
+
+                        if(field === "__all__"){
+                            $("#re_pwd_err").text(error_list[0])
+                        }
+
+                        $("#id_" + field).next().html(error_list[0]);
+                        $("#id_" + field).parent().addClass("has-error");
+                    })
+                }
+            }
+        })
+
+    })
+
+</script>
+
+
+</html>

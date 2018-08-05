@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ article.title }}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/detail.css">
+{% endblock %}
+
+{% block content %}
+    <div class="text-center"><h3>{{ article.title }}</h3></div>
+    <div>{{ article.content|safe }}</div>
+
+    <hr> <!--点赞-->
+    <div class="row">
+        <div class="col-md-2 col-md-offset-10">
+            <div class="row up-down">
+                <!--顶的"up"必须放在class的0索引-->
+                <div class="up col-md-6 act"><p><span>{{ article.up_count }}</span></p></div>
+                <div class="col-md-6 down act"><p><span>{{ article.down_count }}</span></p></div>
+            </div>
+            <div class="row info"><span id="info"></span></div>
+            {% csrf_token %}
+        </div>
+    </div>
+
+    <!--评论树-->
+    <div class="row">
+        <p class="comment-t">评论树</p>
+        <div class="comment-tree">
+
+        </div>
+    </div>
+
+    <!--评论楼-->
+    <div class="row">
+        <p class="comment-l">评论列表</p>
+        <div id="comment-list">
+            {% for comment in comment_list %}
+                <div class="comment" comment-pk="{{ comment.pk }}">
+                    <div class="comment-nav">
+                        <a href="javascript:;">#<span class="comment-index">{{ forloop.counter }}</span>楼</a>
+                        <span class="comment-create-time">{{ comment.create_time|date:"Y-m-d H:i" }}</span>
+                        <span class="comment-user"><a
+                                href="/{{ comment.user.blog.site_name }}/">{{ comment.user.username }}</a></span>
+                        <p class="pull-right">
+                            {% if comment.user_id == request.user.pk %}
+                                <!--<a href="javascript:;">修改</a>&nbsp;&nbsp;&nbsp;  -->
+                                <a href="javascript:del_comment({{ comment.pk }});">删除</a>
+                            {% else %}
+                                <a href="javascript:repeat({{ comment.pk }}, '{{ comment.user.username }}');">回复</a>
+                                <!--&nbsp;&nbsp;&nbsp;<a href="javascript:;">引用</a> -->
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="comment-content">
+                        {% if comment.parent_comment_id %}
+                            @{{ comment.parent_comment.user.username }}<br>
+                        {% endif %}
+                        {{ comment.content }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="bak" style="display: none">
+        <div class="comment" comment-pk=''>
+            <div class="comment-nav">
+                <a href="javascript:;">#<span class="comment-index">   </span>楼</a>
+                <span class="comment-create-time">    </span>
+                <span class="comment-user"><a href="/{{ request.user.blog.site_name }}/">{{ request.user.username }}</a></span>
+                <p class="pull-right">
+                    <!--  <a href="javascript:;">修改</a>&nbsp;&nbsp;&nbsp;-->
+                    <a href="javascript:del_comment(0);" class="del-comment">删除</a>
+                </p>
+            </div>
+            <div class="comment-content">
+
+            </div>
+        </div>
+    </div>
+
+    <!--评论框-->
+    <div class="row">
+        <div id="comment_form_container">
+            <div id="commentform_title">发表评论</div>
+            <p>
+                昵称：<input type="text" id="tbCommentAuthor" class="author" disabled="disabled" size="50"
+                          value="{{ request.user.username }}">
+            </p>
+            <div class="commentbox_title_left">评论内容：</div>
+            <textarea id="tbCommentBody" class="comment_textarea"></textarea>
+            <p id="commentbox_opt">
+                <input id="btn_comment_submit" type="button" class="comment_btn" value="提交评论">
+            </p>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script>
+        // 点赞
+        $(".act").each(function () {
+            $(this).click(function () {
+                $("#info").html('提交中...');
+                var is_up;
+                if (this.classList[0] === "up") {
+                    is_up = true
+                } else {
+                    is_up = false
+                }
+                var span = $(this).find("span");
+                $.ajax({
+                    url: "/up_down/",
+                    type: "post",
+                    data: {
+                        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
+                        "is_up": is_up,
+                        "article_id": "{{ article.pk }}"
+                    },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.status) {
+                            // 赞或踩成功
+                            var count = +span.html();
+                            count++;
+                            span.text(count)
+                        }
+                        //setTimeout-->模拟网络延迟
+                        setTimeout(function () {
+                            $("#info").html(data['msg'])
+                        }, 1000)
+                    }
+                })
+            })
+        });
+
+        //评论
+        var pid = '', p_name = '';
+        $("#btn_comment_submit").click(function () {
+            var content = $("#tbCommentBody").val();
+            if (pid) {
+                content = content.substring(p_name.length, content.length) //去掉父评论的name
+            }
+            if (content) {
+                $.ajax({
+                    url: "/comment/",
+                    type: "post",
+                    data: {
+                        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
+                        "article_id": "{{ article.pk }}",
+                        "content": content,
+                        pid: pid
+                    },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        var comment_floor = $("#comment-list").children().length + 1; //新评论楼层
+                        var obj = $("#bak").find(".comment").clone(true);
+                        obj.attr("comment-pk", data.new_comment_pk);
+                        obj.find(".comment-index").html(comment_floor);
+                        obj.find(".comment-create-time").html(data.time);
+                        obj.find(".comment-content").html(p_name + '\r\n' + content);
+                        obj.find("a.del-comment").prop('href', "javascript:del_comment(" + data.new_comment_pk + ");");
+                        $("#comment-list").append(obj);
+
+                        //评论树
+                        var s = '<div class="comment-item" comment-id=' + data.new_comment_pk + '><span>' + content + '</span></div>';
+                        if (!pid) {
+                        $(".comment-tree").append(s);
+                    } else {
+                        $("[comment-id=" + pid + "]").append(s);
+                    }
+                        // 清空输入框
+                        pid = '';
+                        p_name = '';
+                        $("#tbCommentBody").val('');
+                    }
+                })
+            }
+        });
+
+        //子评论
+        function repeat(pk, name) {
+            pid = pk;
+            $("#tbCommentBody").val('@' + name + '\n').focus();
+            p_name = $("#tbCommentBody").val();
+        }
+
+        //删除
+        function del_comment(cid) {
+            $.ajax({
+                url: '/del_comment/',
+                type: 'get',
+                data: {
+                    'comment_id': cid
+                },
+                success: function (data) {
+                    if (data) {
+                        $('[comment-pk=' + cid + ']').remove();
+                        $('[comment-id=' + cid + ']').remove()
+                    }
+                }
+            })
+        }
+
+        //评论树
+        $.ajax({
+            url: "/comment_tree/",
+            type: "get",
+            data: {
+                "article_id": {{ article_id }}
+            },
+            success: function (comment_list) {
+                $.each(comment_list, function (index, comment_object) {
+                    var pk = comment_object.pk;
+                    var content = comment_object.content;
+                    var parent_comment_id = comment_object.parent_comment_id;
+                    var s = '<div class="comment-item" comment-id=' + pk + '><span>' + content + '</span></div>';
+
+                    if (!parent_comment_id) {
+                        $(".comment-tree").append(s);
+                    } else {
+                        $("[comment-id=" + parent_comment_id + "]").append(s);
+                    }
+                })
+            }
+        });
+
+        $(".comment-t").click(function () {
+            $(".comment-tree").toggle()
+        })
+    </script>
+{% endblock %}

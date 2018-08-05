@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    {% block css %}{% endblock %}
+
+</head>
+<body>
+<div class="c"></div>
+<div class="container-fluid">
+
+    <div class="row header">
+        <div class="col-md-2">
+            <a href="javascript:;" class="title">{{ blog.title }}</a>
+        </div>
+        <div class="col-md-8 manage-menu pull-right">
+            <a href="/">博客园</a>
+            <a href="/backend/">管理</a>
+        </div>
+    </div>
+    <!--body-->
+    <div class="row">
+        <!--左侧菜单-->
+        <div class="col-md-3">
+            {% load my_tags %}
+            {% left_menu site %}
+        </div>
+        <!--文章列表-->
+        <div class="col-md-8">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+    </div>
+</div>
+</body>
+{% block js %}{% endblock %}
+</html>

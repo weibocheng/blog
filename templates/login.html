@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <style>
+        .to-top{margin-top: 5%}
+        .head{font-size: 30px;font-weight: 700;margin-bottom: 10px}
+        .error{margin-left: 10px}
+    </style>
+</head>
+<body>
+
+
+<div class="container to-top" >
+    <div class="row">
+        <div class="text-center head">用户登录</div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form novalidate>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="user">用户名</label>
+                    <input type="text" id="user" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">密码</label>
+                    <input type="password" id="pwd" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="check_code">验证码</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" id="check_code" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <img src="/check_code/" onclick="change(this)">
+                        </div>
+                    </div>
+                </div>
+                <input type="button" value="登录" class="btn btn-default" id="login_btn">
+                <span class="error"></span>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+<script src="/static/js/jquery-3.2.1.min.js"></script>
+<script>
+    function change(ths) {
+        ths.src = ths.src + '?';
+    }
+
+    $("#login_btn").click(function () {
+        $.ajax({
+            url: "",
+            type: "post",
+            data: {
+                user: $("#user").val(),
+                pwd: $("#pwd").val(),
+                check_code: $("#check_code").val(),
+                csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()
+            },
+            success: function (data) {
+                if(data.user){
+                    // 跳转
+                    location.href = "/"
+                }else {
+                    $(".error").text(data.msg).css('color', 'red');
+                    $("#check_code")[0].parentNode.nextElementSibling.childNodes[1].src += '?';
+
+                    setTimeout(function(){
+                         $(".error").text("");
+                    },1000)
+                }
+            }
+        })
+    })
+</script>
+</html>

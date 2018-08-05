@@ -1,0 +1,22 @@
+.up-down div{margin-left: 15px;width: 46px;height: 52px;cursor: pointer}
+.up-down p{margin: 5px auto 0;text-align: center;color: #075db3}
+.up{margin-right: 10px;background: url(/static/img/upup.gif) no-repeat;}
+.down{background: url(/static/img/downdown.gif) no-repeat;}
+.info{text-align: center; color: red;margin-top: 10px}
+
+#commentform_title {background-image: url(/static/img/icon_addcomment.gif);background-repeat: no-repeat;padding: 0 0 0 25px;margin: 25px 0 10px 0;}
+input.author{background-image: url(/static/img/icon_form.gif);background-repeat: no-repeat;border: 1px solid #ccc;padding: 4px 4px 4px 30px;width: 300px;font-size: 13px;background-position: 3px -3px;}
+
+.comment_textarea{
+    width: 450px;
+    height: 300px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    line-height: 1.6;
+}
+
+.comment{border-bottom: 1px solid silver; padding: 10px;}
+.comment-l, .comment-t{font-size: 16px;font-weight: 600;border-bottom: 1px solid silver; padding: 20px 10px 10px;}
+.comment-tree{display: none}
+.comment-nav{font-size: 16px}
+.comment-content, .comment-item{margin: 10px; color: #888}

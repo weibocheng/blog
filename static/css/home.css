@@ -1,0 +1,8 @@
+.nav-menu a{margin: 0 3px;}
+.nav-menu>div{display: inline}
+.sys-menu a{color: white;margin: 3px 12px; font-size: 14px; line-height: 30px}
+.icon-comment{margin-left: 5px; padding: 0 5px 0 18px; background-repeat: no-repeat;background-image: url(/static/img/icon_comment.gif)}
+.icon-arrow{padding: 0 5px 0 18px; background-repeat: no-repeat; background-image: url(/static/img/icon_arrow.gif)}
+.pub-info{margin-bottom: 10px; text-align: right}
+.manage-menu a{color: white;background-color: #2aabd2;padding: 5px 10px}
+.left-menu p{color: #2aabd2;font-size: 25px;text-align: center;}

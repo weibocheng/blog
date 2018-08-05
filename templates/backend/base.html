@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}{% endblock %}
+    <link rel="stylesheet" href="/static/css/back_base.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="nav-head">
+                <a href="/{{ request.user.blog.site_name }}/">{{ request.user.username }}</a>
+                <a href="/logout/">退出</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="pg-head">
+                <a href="/"><img class="logo" src="/static/img/adminlogo.gif"></a>
+            </div>
+        </div>
+        <div class="row pg-body">
+            <div class="col-md-2">
+                <div class="option">操&nbsp;&nbsp;&nbsp;作</div>
+                <div class="action">
+                    <p><a href="/add_article/">添加新文章</a></p>
+                    <p id="add-tag"><a href="/add_tag/?to=backend">添加新标签</a></p>
+                    <p id="add-category"><a href="/add_category/?to=backend">添加新分类</a></p>
+                </div>
+            </div>
+
+            <div class="col-md-10">
+                <div class="blank"></div>
+                <div class="article-list">
+
+                    {% block article %}
+                    
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% block js %}
+
+{% endblock %}
+</html>
